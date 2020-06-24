@@ -12,10 +12,10 @@ public final class PreferenceUtilities {
     public static final String KEY_CHARGING_REMINDER_COUNT = "charging-reminder-count";
 
     public static final int DEFAULT_COUNT = 0;
-    public static final int DEFAULT_OUNCES = 8;
+    public static final int DEFAULT_OUNCES = 0;
 
     synchronized private static void setWaterCount(Context context, int glassesOfWater) {
-        int ouncesOfWater = glassesOfWater * DEFAULT_OUNCES;
+        //int ouncesOfWater = glassesOfWater * DEFAULT_OUNCES;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(KEY_WATER_COUNT, glassesOfWater);
@@ -47,7 +47,7 @@ public final class PreferenceUtilities {
 
     synchronized public static void incrementOuncesCount(Context context) {
         int ouncesCount = PreferenceUtilities.getOuncesCount(context);
-        PreferenceUtilities.setOuncesCount(context, ++ouncesCount);
+        PreferenceUtilities.setOuncesCount(context, 8 + ouncesCount);
     }
 
     synchronized public static void incrementChargingReminderCount(Context context) {
