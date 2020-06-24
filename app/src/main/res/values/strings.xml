@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Drink Water!</string>
+<!--    Strings for MainActivity-->
+    <string name="instructions">
+    Press the glass of water after you\'ve had a drink.</string>
+    <string name="water_increase_content_desc">Press to record drinking water</string>
+    <string name="charger_content_desc">charging plug</string>
+
+    <string name="default_water_count">0</string>
+    <string name="default_charge_notification_count">Drink water while charging reminder sent 0 times</string>
+    <string name="default_ounces_count">0</string>
+
+
+    <plurals name="charge_notification_count">
+        <item quantity="zero">Drink water while charging reminder sent %d times</item>
+        <item quantity="one">Drink water while charging reminder sent %d times</item>
+        <item quantity="other">Drink water while charging reminder sent %d times</item>
+    </plurals>
+
+<!--    Strings for notifications and toasts-->
+    <string name="water_chug_toast">CHUG CHUG CHUG</string>
+
+    <string name="charging_reminder_notification_title">Device charging - where\'s that water?</string>
+    <string name="charging_reminder_notification_body">Charging your phone is a great time to drink water!</string>
+</resources>
