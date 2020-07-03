@@ -100,4 +100,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             updateChargingReminderCount();
         }
     }
+    // TODO (14) Add a button for testing your notification with an onClick method called testNotification
+    // TODO (15) Create a method called testNotification that triggers NotificationUtils' remindUserBecauseCharging
 }

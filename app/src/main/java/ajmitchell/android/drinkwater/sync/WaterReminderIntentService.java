@@ -5,6 +5,10 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
+/*
+This class is for running tasks in the background
+ */
+
 public class WaterReminderIntentService extends IntentService {
     public WaterReminderIntentService() {
         super("WaterReminderIntentService");

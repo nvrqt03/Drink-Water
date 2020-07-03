@@ -22,4 +22,5 @@
 
     <string name="charging_reminder_notification_title">Device charging - where\'s that water?</string>
     <string name="charging_reminder_notification_body">Charging your phone is a great time to drink water!</string>
+    <string name="main_notification_channel_name">Primary</string>
 </resources>
