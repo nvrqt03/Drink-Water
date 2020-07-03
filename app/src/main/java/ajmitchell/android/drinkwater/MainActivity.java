@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import ajmitchell.android.drinkwater.sync.ReminderTasks;
 import ajmitchell.android.drinkwater.sync.WaterReminderIntentService;
+import ajmitchell.android.drinkwater.utilities.NotificationUtils;
 import ajmitchell.android.drinkwater.utilities.PreferenceUtilities;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -100,6 +101,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             updateChargingReminderCount();
         }
     }
-    // TODO (14) Add a button for testing your notification with an onClick method called testNotification
-    // TODO (15) Create a method called testNotification that triggers NotificationUtils' remindUserBecauseCharging
+
+
+    public void testNotification (View view) {
+        NotificationUtils.remindUserBecauseCharging(this);
+    }
 }
