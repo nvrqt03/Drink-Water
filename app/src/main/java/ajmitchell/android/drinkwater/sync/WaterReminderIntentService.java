@@ -6,7 +6,7 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 
 /*
-This class is for running tasks in the background
+This class is for running tasks in the background. uses the helper class ReminderTasks to run in background.
  */
 
 public class WaterReminderIntentService extends IntentService {
