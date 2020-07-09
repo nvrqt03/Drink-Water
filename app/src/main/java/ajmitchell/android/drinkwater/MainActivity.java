@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ajmitchell.android.drinkwater.sync.ReminderTasks;
+import ajmitchell.android.drinkwater.sync.ReminderUtilities;
 import ajmitchell.android.drinkwater.sync.WaterReminderIntentService;
 import ajmitchell.android.drinkwater.utilities.NotificationUtils;
 import ajmitchell.android.drinkwater.utilities.PreferenceUtilities;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         updateOunces();
         updateCups();
         updateChargingReminderCount();
+
+        ReminderUtilities.scheduleChargingReminder(this);
 
 //        setting up the SharedPreferences listener
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -82,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         startService(incrementWaterIntent);
     }
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -102,8 +107,4 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-
-    public void testNotification (View view) {
-        NotificationUtils.remindUserBecauseCharging(this);
-    }
 }
