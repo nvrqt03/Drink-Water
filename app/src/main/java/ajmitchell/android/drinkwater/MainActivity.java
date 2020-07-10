@@ -65,21 +65,29 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mChargingIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
     }
 
+    // helper function created for testing - below override of onResume was not working with this code. Also did not work by specifying API level
+    // however removing the code and simply using the sticky intent causes the correct results - showing the correct charging icon if charging even when
+    // app moves to background. docs also say use sticky intent - https://developer.android.com/training/monitoring-device-state/battery-monitoring.html
+    public void isCharging() {
+        BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+        boolean isCharging = batteryManager.isCharging();
+        showCharging(isCharging);
+    }
+
     // setup broadcast receiver
     @Override
     protected void onResume() {
         super.onResume();
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
-            boolean isCharging = batteryManager.isCharging();
-            showCharging(isCharging);
-        } else {
-            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-            Intent currentBatteryStatusIntent = registerReceiver(null, intentFilter);
-            int batteryStatus = currentBatteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-            boolean isCharging = batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING || batteryStatus == BatteryManager.BATTERY_STATUS_FULL;
-            showCharging(isCharging);
-        }
+
+//            BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+//            boolean isCharging = batteryManager.isCharging();
+//            showCharging(isCharging);
+
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent currentBatteryStatusIntent = registerReceiver(null, intentFilter);
+        int batteryStatus = currentBatteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        boolean isCharging = batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING || batteryStatus == BatteryManager.BATTERY_STATUS_FULL;
+        showCharging(isCharging);
         registerReceiver(mChargingReceiver, mChargingIntentFilter);
     }
 
@@ -97,19 +105,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mWaterCountDisplay.setText(waterCount + "");
     }
 
-//    Updating the ounces display
+    //    Updating the ounces display
     private void updateOunces() {
         int ounces = PreferenceUtilities.getOuncesCount(this);
-        mOuncesCountDisplay.setText(ounces+"");
+        mOuncesCountDisplay.setText(ounces + "");
     }
 
-//    Updating the cups display
+    //    Updating the cups display
     private void updateCups() {
         int cups = PreferenceUtilities.getWaterCount(this);
-        mCupsDisplay.setText(cups+"");
+        mCupsDisplay.setText(cups + "");
     }
 
-//      Updating the charging reminder count from sharedPrefs
+    //      Updating the charging reminder count from sharedPrefs
     private void updateChargingReminderCount() {
         int charging = PreferenceUtilities.getChargingReminderCount(this);
         String updateChargingReminder = getResources().getQuantityString(R.plurals.charge_notification_count, charging, charging);
@@ -152,12 +160,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             updateChargingReminderCount();
         }
     }
+
     private class ChargingBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Boolean isCharging = action.equals(Intent.ACTION_POWER_CONNECTED);
+            Boolean isCharging = (action.equals(Intent.ACTION_POWER_CONNECTED));
             showCharging(isCharging);
         }
     }
