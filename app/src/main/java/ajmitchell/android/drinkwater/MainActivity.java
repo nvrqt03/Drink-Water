@@ -3,8 +3,13 @@ package ajmitchell.android.drinkwater;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private TextView mOuncesCountDisplay;
     private TextView mCupsDisplay;
     private Toast mToast;
+
+    IntentFilter mChargingIntentFilter;
+    ChargingBroadcastReceiver mChargingReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +56,41 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 //        setting up the SharedPreferences listener
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
+
+        // instantiating the intent filter and charging broadcast receiver
+        mChargingIntentFilter = new IntentFilter();
+        mChargingReceiver = new ChargingBroadcastReceiver();
+
+        mChargingIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        mChargingIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
     }
 
-//    Here we need to retrieve values from SharedPreferences and set the values in our UI
+    // setup broadcast receiver
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+            boolean isCharging = batteryManager.isCharging();
+            showCharging(isCharging);
+        } else {
+            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent currentBatteryStatusIntent = registerReceiver(null, intentFilter);
+            int batteryStatus = currentBatteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            boolean isCharging = batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING || batteryStatus == BatteryManager.BATTERY_STATUS_FULL;
+            showCharging(isCharging);
+        }
+        registerReceiver(mChargingReceiver, mChargingIntentFilter);
+    }
+
+    // override onPause and unregister receiver - won't need unless in the foreground
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mChargingReceiver);
+    }
+
+    //    Here we need to retrieve values from SharedPreferences and set the values in our UI
 //    This updates the textView to display the new water count from SharedPrefs
     private void updateWaterCount() {
         int waterCount = PreferenceUtilities.getWaterCount(this);
@@ -85,7 +125,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         startService(incrementWaterIntent);
     }
 
-
+    private void showCharging(boolean isCharging) {
+        if (isCharging) {
+            mChargingImageView.setImageResource(R.drawable.ic_power_green_24);
+        } else {
+            mChargingImageView.setImageResource(R.drawable.ic_power_grey_80);
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -106,5 +152,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             updateChargingReminderCount();
         }
     }
+    private class ChargingBroadcastReceiver extends BroadcastReceiver {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Boolean isCharging = action.equals(Intent.ACTION_POWER_CONNECTED);
+            showCharging(isCharging);
+        }
+    }
 }

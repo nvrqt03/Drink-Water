@@ -14,7 +14,7 @@ import com.firebase.jobdispatcher.Trigger;
 import java.util.concurrent.TimeUnit;
 
 public class ReminderUtilities {
-    public static final int REMINDER_INTERVAL_MINUTES = 2;
+    public static final int REMINDER_INTERVAL_MINUTES = 15;
     public static final int REMINDER_INTERVAL_SECONDS = (int) TimeUnit.MINUTES.toSeconds(REMINDER_INTERVAL_MINUTES);
     public static final int SYNC_FLEXTIME_SECONDS = REMINDER_INTERVAL_SECONDS;
 
